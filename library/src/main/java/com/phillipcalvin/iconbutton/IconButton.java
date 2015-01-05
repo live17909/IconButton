@@ -9,9 +9,13 @@ import android.util.AttributeSet;
 import android.widget.Button;
 
 public class IconButton extends Button {
+    private static final int CENTER_BOTH = 0;
+    private static final int CENTER_TEXT = 1;
+
     protected int drawableWidth;
     protected DrawablePositions drawablePosition;
     protected int iconPadding;
+    protected int center;
 
     // Cached to prevent allocation during onLayout
     Rect bounds;
@@ -47,13 +51,14 @@ public class IconButton extends Button {
 
         TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.IconButton);
         int paddingId = typedArray.getDimensionPixelSize(R.styleable.IconButton_iconPadding, 0);
-        setIconPadding(paddingId);
+        int center = typedArray.getInt(R.styleable.IconButton_center, 0);
+        setIconPadding(paddingId, center);
         typedArray.recycle();
     }
 
-    public void setIconPadding(int padding) {
+    public void setIconPadding(int padding, int center) {
         iconPadding = padding;
-        requestLayout();
+        this.center = center;
     }
 
     @Override
@@ -65,9 +70,18 @@ public class IconButton extends Button {
         textPaint.getTextBounds(text, 0, text.length(), bounds);
 
         int textWidth = bounds.width();
-        int contentWidth = drawableWidth + iconPadding + textWidth;
 
-        int contentLeft = (int) ((getWidth() / 2.0) - (contentWidth / 2.0));
+        if (center == CENTER_TEXT) {
+            textCenter(textWidth);
+        } else {
+            bothCenter(textWidth);
+        }
+
+    }
+
+    private void bothCenter(int textWidth) {
+        int contentWidth = drawableWidth + iconPadding + textWidth;
+        int contentLeft = (getWidth() - contentWidth) / 2;
         setCompoundDrawablePadding(-contentLeft + iconPadding);
         switch (drawablePosition) {
             case LEFT:
@@ -75,6 +89,22 @@ public class IconButton extends Button {
                 break;
             case RIGHT:
                 setPadding(0, 0, contentLeft, 0);
+                break;
+            default:
+                setPadding(0, 0, 0, 0);
+        }
+    }
+
+    private void textCenter(int textWidth) {
+        int contentWidth = iconPadding + textWidth;
+        int contentLeft = (getWidth() - contentWidth) / 2;
+        setCompoundDrawablePadding(-contentLeft + iconPadding);
+        switch (drawablePosition) {
+            case LEFT:
+                setPadding(contentLeft - drawableWidth, 0, 0, 0);
+                break;
+            case RIGHT:
+                setPadding(0, 0, contentLeft - drawableWidth, 0);
                 break;
             default:
                 setPadding(0, 0, 0, 0);

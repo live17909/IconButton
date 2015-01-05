@@ -2,5 +2,9 @@
 <resources>
     <declare-styleable name="IconButton">
         <attr name="iconPadding" format="dimension"/>
+        <attr name="center" format="enum">
+            <enum name="both" value="0"/>
+            <enum name="text" value="1"/>
+        </attr>
     </declare-styleable>
 </resources>
