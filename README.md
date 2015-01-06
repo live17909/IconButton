@@ -42,7 +42,23 @@ If you already have library references, change the `1` to the appropriate number
 
 ## Usage
 
-### In your layout
+### For new version(1.0.1 or more recent version)
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+
+    <!-- ... -->
+
+      <com.phillipcalvin.iconbutton.IconButton
+          android:id="@+id/search"
+          android:drawableLeft="@drawable/action_search"
+          android:text="@string/search"
+          app:iconPadding="10dp" />
+
+### For old version(1.0 or earlier version)
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res/your.project.package"
