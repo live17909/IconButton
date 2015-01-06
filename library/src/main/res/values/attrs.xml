@@ -3,8 +3,9 @@
     <declare-styleable name="IconButton">
         <attr name="iconPadding" format="dimension"/>
         <attr name="center" format="enum">
-            <enum name="both" value="0"/>
-            <enum name="text" value="1"/>
+            <enum name="all" value="0"/>
+            <enum name="without_drawable" value="1"/>
+            <enum name="text_only" value="2"/>
         </attr>
     </declare-styleable>
 </resources>
