@@ -8,11 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.Button;
 
-public class IconButton extends Button {
-    private static final int CENTER_ALL = 0;
-    private static final int CENTER_WITHOUT_DRAWABLE = 1;
-    private static final int CENTER_TEXT_ONLY = 2;
-
+public class IconButton extends Button implements CenterInterface{
     protected int drawableWidth;
     protected DrawablePositions drawablePosition;
     protected int iconPadding;
@@ -20,12 +16,6 @@ public class IconButton extends Button {
 
     // Cached to prevent allocation during onLayout
     Rect bounds;
-
-    private enum DrawablePositions {
-        NONE,
-        LEFT,
-        RIGHT
-    }
 
     public IconButton(Context context) {
         super(context);
@@ -51,15 +41,11 @@ public class IconButton extends Button {
         }
 
         TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.IconButton);
-        int paddingId = typedArray.getDimensionPixelSize(R.styleable.IconButton_iconPadding, 0);
-        int center = typedArray.getInt(R.styleable.IconButton_center, 0);
-        setIconPadding(paddingId, center);
-        typedArray.recycle();
-    }
-
-    public void setIconPadding(int padding, int center) {
+        int padding = typedArray.getDimensionPixelSize(R.styleable.IconButton_iconPadding, 0);
+        int center = typedArray.getInt(R.styleable.IconButton_center, CENTER_ALL);
         iconPadding = padding;
         this.center = center;
+        typedArray.recycle();
     }
 
     @Override
@@ -72,60 +58,8 @@ public class IconButton extends Button {
 
         int textWidth = bounds.width();
 
-        if (center == CENTER_WITHOUT_DRAWABLE) {
-            centerWithoutDrawable(textWidth);
-        } else if (center == CENTER_TEXT_ONLY) {
-            centerOnlyText(textWidth);
-        } else {
-            allCenter(textWidth);
-        }
-    }
-
-    private void centerWithoutDrawable(int textWidth) {
-        int contentWidth = iconPadding + textWidth;
-        int contentLeft = (getWidth() - contentWidth) / 2;
-        setCompoundDrawablePadding(-contentLeft + iconPadding);
-        switch (drawablePosition) {
-            case LEFT:
-                setPadding(contentLeft - drawableWidth, 0, 0, 0);
-                break;
-            case RIGHT:
-                setPadding(0, 0, contentLeft - drawableWidth, 0);
-                break;
-            default:
-                setPadding(0, 0, 0, 0);
-        }
-    }
-
-    private void centerOnlyText(int textWidth) {
-        int contentLeft = (getWidth() - textWidth) / 2;
-        setCompoundDrawablePadding(-contentLeft + iconPadding);
-        switch (drawablePosition) {
-            case LEFT:
-                setPadding(contentLeft - drawableWidth - iconPadding, 0, 0, 0);
-                break;
-            case RIGHT:
-                setPadding(0, 0, contentLeft - drawableWidth - iconPadding, 0);
-                break;
-            default:
-                setPadding(0, 0, 0, 0);
-        }
-    }
-
-    private void allCenter(int textWidth) {
-        int contentWidth = drawableWidth + iconPadding + textWidth;
-        int contentLeft = (getWidth() - contentWidth) / 2;
-        setCompoundDrawablePadding(-contentLeft + iconPadding);
-        switch (drawablePosition) {
-            case LEFT:
-                setPadding(contentLeft, 0, 0, 0);
-                break;
-            case RIGHT:
-                setPadding(0, 0, contentLeft, 0);
-                break;
-            default:
-                setPadding(0, 0, 0, 0);
-        }
+        IconConfig config = new IconConfig(center, textWidth, iconPadding, drawableWidth, drawablePosition);
+        IconUtil.setCenter(this, config);
     }
 
     @Override
