@@ -1,3 +1,7 @@
+/*
+ * Date: 15-1-8
+ * Project: IconButton
+ */
 package com.phillipcalvin.iconbutton;
 
 import android.content.Context;
@@ -6,9 +10,13 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.widget.Button;
+import android.widget.CheckBox;
 
-public class IconButton extends Button implements CenterInterface{
+/**
+ * Author: msdx (645079761@qq.com)
+ * Time: 15-1-8 上午9:45
+ */
+public class IconCheckedBox extends CheckBox implements CenterInterface {
     protected int drawableWidth;
     protected DrawablePositions drawablePosition;
     protected int iconPadding;
@@ -17,22 +25,23 @@ public class IconButton extends Button implements CenterInterface{
     // Cached to prevent allocation during onLayout
     Rect bounds;
 
-    public IconButton(Context context) {
+    public IconCheckedBox(Context context) {
         super(context);
         bounds = new Rect();
     }
 
-    public IconButton(Context context, AttributeSet attrs) {
+    public IconCheckedBox(Context context, AttributeSet attrs) {
         super(context, attrs);
         bounds = new Rect();
         applyAttributes(attrs);
     }
 
-    public IconButton(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
+    public IconCheckedBox(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
         bounds = new Rect();
         applyAttributes(attrs);
     }
+
 
     protected void applyAttributes(AttributeSet attrs) {
         // Slight contortion to prevent allocating in onLayout
