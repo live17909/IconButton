@@ -16,7 +16,7 @@ import android.widget.CheckBox;
  * Author: msdx (645079761@qq.com)
  * Time: 15-1-8 上午9:45
  */
-public class IconCheckedBox extends CheckBox implements CenterInterface {
+public class IconCheckBox extends CheckBox implements CenterInterface {
     protected int drawableWidth;
     protected DrawablePositions drawablePosition;
     protected int iconPadding;
@@ -25,18 +25,18 @@ public class IconCheckedBox extends CheckBox implements CenterInterface {
     // Cached to prevent allocation during onLayout
     Rect bounds;
 
-    public IconCheckedBox(Context context) {
+    public IconCheckBox(Context context) {
         super(context);
         bounds = new Rect();
     }
 
-    public IconCheckedBox(Context context, AttributeSet attrs) {
+    public IconCheckBox(Context context, AttributeSet attrs) {
         super(context, attrs);
         bounds = new Rect();
         applyAttributes(attrs);
     }
 
-    public IconCheckedBox(Context context, AttributeSet attrs, int defStyleAttr) {
+    public IconCheckBox(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         bounds = new Rect();
         applyAttributes(attrs);
