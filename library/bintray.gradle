@@ -78,7 +78,7 @@ bintray {
         into 'standalone_files/level1'
         rename '(.+)\\.(.+)', '$1-suffix.$2'
     }
-    dryRun = true //Whether to run this as dry-run, without deploying
+    dryRun = false //Whether to run this as dry-run, without deploying
     publish = true //If version should be auto published after an upload
     pkg {
         repo = 'maven'
