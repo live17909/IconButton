@@ -58,6 +58,18 @@ public class IconCheckBox extends CheckBox implements CenterInterface {
     }
 
     @Override
+    public void setText(CharSequence text, BufferType type) {
+        super.setText(text, type);
+        requestLayout();
+    }
+
+    @Override
+    public void append(CharSequence text, int start, int end) {
+        super.append(text, start, end);
+        requestLayout();
+    }
+
+    @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
