@@ -7,7 +7,7 @@ package com.phillipcalvin.iconbutton;
 import android.widget.Button;
 
 /**
- * Author: msdx (645079761@qq.com)
+ * @author Huang Haohang (msdx.android@qq.com)
  * Time: 15-1-8 上午9:30
  */
 public class IconUtil implements CenterInterface{

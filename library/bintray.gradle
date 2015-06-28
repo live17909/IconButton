@@ -1,20 +1,19 @@
 group = PROJ_GROUP
 version = PROJ_VERSION
+project.archivesBaseName = PROJ_ARTIFACTID
 
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven-publish'
 
 task androidJavadocs(type: Javadoc) {
     source = android.sourceSets.main.java
+    classpath += configurations.compile
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
 }
 
 task androidJavadocsJar(type: Jar) {
     classifier = 'javadoc'
     from androidJavadocs.destinationDir
-}
-
-task androidLibJar(type: Jar) {
-    from fileTree(dir: './build/intermediates/classes/release')
 }
 
 task androidSourcesJar(type: Jar) {
@@ -23,6 +22,7 @@ task androidSourcesJar(type: Jar) {
 }
 
 artifacts {
+    archives androidJavadocsJar
     archives androidSourcesJar
 }
 
@@ -52,10 +52,9 @@ publishing {
         mavenJava(MavenPublication) {
             artifactId PROJ_ARTIFACTID
 
-            artifact androidSourcesJar
-            artifact androidJavadocsJar
-            artifact bundleRelease
-
+            pom{
+                packaging 'aar'
+            }
             pom.withXml {
                 def root = asNode()
                 root.appendNode('description', PROJ_DESCRIPTION)
@@ -71,20 +70,14 @@ bintray {
     user = bintrayUser
     key = bintrayKey
 
+    configurations = ['archives']
     publications = ['mavenJava'] //When uploading Maven-based publication files
-    // - AND/OR -
-    filesSpec { //When uploading any arbitrary files ('filesSpec' is a standard Gradle CopySpec)
-        from 'arbitrary-files'
-        into 'standalone_files/level1'
-        rename '(.+)\\.(.+)', '$1-suffix.$2'
-    }
-    dryRun = false //Whether to run this as dry-run, without deploying
     publish = true //If version should be auto published after an upload
     pkg {
         repo = 'maven'
         //     userOrg = 'myorg' //An optional organization name when the repo belongs to one of the user's orgs
         name = PROJ_NAME
-        desc = 'what a fantastic package indeed!'
+        desc = PROJ_DESCRIPTION
         websiteUrl = PROJ_WEBSITEURL
         issueTrackerUrl = PROJ_ISSUETRACKERURL
         vcsUrl = PROJ_VCSURL
