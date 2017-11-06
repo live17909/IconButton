@@ -3,92 +3,105 @@ version = PROJ_VERSION
 project.archivesBaseName = PROJ_ARTIFACTID
 
 apply plugin: 'com.jfrog.bintray'
-apply plugin: 'maven-publish'
+apply plugin: 'com.github.dcendents.android-maven'
 
-task androidJavadocs(type: Javadoc) {
-    source = android.sourceSets.main.java
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
     classpath += configurations.compile
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
 }
 
-task androidJavadocsJar(type: Jar) {
+task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
-    from androidJavadocs.destinationDir
+    from javadoc.destinationDir
 }
 
-task androidSourcesJar(type: Jar) {
-    classifier = 'sources'
-    from android.sourceSets.main.java.srcDirs
+javadoc {
+    options{
+        encoding "UTF-8"
+        charSet 'UTF-8'
+        author true
+        version true
+        links "https://androiddoc.qiniudn.com/reference/"
+        title "$PROJ_NAME $PROJ_VERSION"
+    }
 }
 
 artifacts {
-    archives androidJavadocsJar
-    archives androidSourcesJar
+    archives sourcesJar
+    archives javadocJar
 }
 
-def pomConfig = {
-    licenses {
-        license {
-            name "The Apache Software License, Version 2.0"
-            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            distribution "repo"
-        }
-    }
-    developers {
-        developer {
-            id 'pnc'
-            name 'Phillip Calvin'
-        }
-        developer {
-            id DEVELOPER_ID
-            name DEVELOPER_NAME
-            email DEVELOPER_EMAIL
-        }
-    }
-}
+install {
+    repositories.mavenInstaller {
+        pom.project {
+            name PROJ_NAME
+            description PROJ_DESCRIPTION
+            url PROJ_WEBSITEURL
+            inceptionYear '2016'
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
+            packaging 'aar'
+            groupId PROJ_GROUP
             artifactId PROJ_ARTIFACTID
+            version PROJ_VERSION
 
-            pom{
-                packaging 'aar'
+            licenses {
+                license {
+                    name 'The Apache Software License, Version 2.0'
+                    url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    distribution 'repo'
+                }
             }
-            pom.withXml {
-                def root = asNode()
-                root.appendNode('description', PROJ_DESCRIPTION)
-                root.children().last() + pomConfig
+            scm {
+                connection PROJ_VCSURL
+                url PROJ_WEBSITEURL
+
+            }
+            developers {
+                developer {
+                    id 'pnc'
+                    name 'Phillip Calvin'
+                }
+                developer {
+                    id DEVELOPER_ID
+                    name DEVELOPER_NAME
+                    email DEVELOPER_EMAIL
+                }
             }
         }
     }
 }
 
 bintray {
-    //Do not share your username and key.
-    // Config it in ~/.gradle/gradle.properties or local.properties
-    user = hasProperty("bintrayUser")?getProperty("bintrayUser"):getProperty("BINTRAY_USER")
-    key = hasProperty("bintrayKey")?getProperty("bintrayKey"):getProperty("BINTRAY_KEY")
+    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : project.property('BINTRAY_USER')
+    key = project.hasProperty('bintrayKey') ? project.property('bintrayKey') : project.property('BINTRAY_KEY')
 
     configurations = ['archives']
-    publications = ['mavenJava'] //When uploading Maven-based publication files
-    publish = true //If version should be auto published after an upload
+
+    dryRun = false
+    publish = true
+
     pkg {
         repo = 'maven'
-        //     userOrg = 'myorg' //An optional organization name when the repo belongs to one of the user's orgs
         name = PROJ_NAME
-        desc = PROJ_DESCRIPTION
+        licenses = ['Apache-2.0']
+        vcsUrl = PROJ_VCSURL
         websiteUrl = PROJ_WEBSITEURL
         issueTrackerUrl = PROJ_ISSUETRACKERURL
-        vcsUrl = PROJ_VCSURL
-        licenses = ['Apache-2.0']
-        //   labels = ['gear', 'gore', 'gorilla']
         publicDownloadNumbers = true
-        //attributes= ['a': ['ay1', 'ay2'], 'b': ['bee'], c: 'cee'] //Optional package-level attributes
-        //Optional version descriptor
         version {
-            name = PROJ_VERSION //Bintray logical version name
+            name = PROJ_VERSION
+            desc = PROJ_DESCRIPTION
             vcsTag = PROJ_VERSION
+
+            gpg {
+                sign = true
+            }
         }
     }
 }

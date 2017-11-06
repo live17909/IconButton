@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.2"
+    compileSdkVersion 25
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId "com.phillipcalvin.iconbuttondemo"
-        minSdkVersion 8
+        minSdkVersion 9
         targetSdkVersion 20
         versionCode 1
         versionName "1.1"
@@ -26,5 +26,5 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 //    compile project(':library') // use the follow declare way
     compile 'com.githang:com-phillipcalvin-iconbutton:2.0'
-    compile 'com.android.support:support-v4:21.0.3'
+    compile 'com.android.support:support-v4:25.4.0'
 }
